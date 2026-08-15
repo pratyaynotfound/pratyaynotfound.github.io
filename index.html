@@ -107,14 +107,15 @@
   .nav-inner {
     max-width: var(--shell);
     margin: 0 auto;
-    padding: var(--s4) var(--gutter);
+    padding: var(--s3) 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--s4);
+    justify-content: flex-start;
+    gap: var(--s3);
     font-family: var(--font-mono);
     font-size: var(--t-small);
     letter-spacing: 0.04em;
+    position: relative;
   }
   .nav-brand {
     display: inline-flex;
@@ -122,6 +123,7 @@
     justify-content: center;
     width: 34px;
     height: 34px;
+    margin-left: var(--gutter);
     color: var(--trace);
     text-decoration: none;
     flex-shrink: 0;
@@ -152,8 +154,8 @@
   .nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s5);
-    margin-left: auto;
+    gap: var(--s4);
+    margin-left: 0;
   }
   .nav-links a {
     text-decoration: none;
@@ -167,7 +169,12 @@
     display: flex;
     align-items: center;
     gap: var(--s3);
-    margin-left: var(--s3);
+    margin-left: auto;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-right: var(--gutter);
   }
   .nav-socials a {
     display: inline-flex;
@@ -483,7 +490,6 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="#education">Education</a>
       <a href="#research">Research</a>
-      <a href="#now">Now</a>
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-socials" aria-label="Social links">
@@ -694,31 +700,24 @@
       <div class="row-meta">Networking</div>
       <div>
         <div class="row-title">WireGuard + WSTunnel Proxy Bypass</div>
-        <p class="row-body">A WireGuard VPN tunnel wrapped in WSTunnel, built on an Azure VPS to bypass restrictive institutional proxy filtering and restore reliable outbound connectivity.</p>
+        <p class="row-body">A WireGuard VPN tunnel wrapped in WSTunnel, built on an Azure VPS to bypass restrictive proxy filtering and restore reliable outbound connectivity.</p>
       </div>
     </div>
 
     <div class="row">
       <div class="row-meta">Self-hosted</div>
       <div>
-        <div class="row-title">Self-hosted Homelab</div>
-        <p class="row-body">A Raspberry Pi running Pi-hole for network-wide DNS filtering, alongside a dedicated PC for self-hosted services and a Minecraft server.</p>
+        <div class="row-title">Homelab</div>
+        <p class="row-body">A ZFS-based NAS running Nextcloud, Jellyfin, Pi-hole, and an automated arr-suite media stack, Minecraft server and other self hosted services.</p>
       </div>
     </div>
 
-    <div class="row">
-      <div class="row-meta">Home lab</div>
-      <div>
-        <div class="row-title">sorboNAS</div>
-        <p class="row-body">A ZFS-based home NAS running Nextcloud, Jellyfin, Pi-hole, and an automated arr-suite media stack, exposed via Tailscale and a Cloudflare Tunnel without opening any ports to the public internet.</p>
-      </div>
-    </div>
 
     <div class="row">
       <div class="row-meta">Hardware</div>
       <div>
         <div class="row-title">Ambilight Build</div>
-        <p class="row-body">A screen-sync ambient lighting rig built around WLED on a NodeMCU/ESP8266, driving a WS2812B LED strip behind the monitor.</p>
+        <p class="row-body">A screen-sync ambient lighting rig built around WLED on a NodeMCU/ESP8266, driving a WS2812B LED strip to sync to the monitor.</p>
       </div>
     </div>
   </section>
