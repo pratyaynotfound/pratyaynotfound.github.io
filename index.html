@@ -164,8 +164,8 @@
   .hero {
     position: relative;
     z-index: 1;
-    padding: var(--s8) 0;
-    min-height: clamp(420px, 42vw, 560px);
+    padding: var(--s6) 0 var(--s5);
+    min-height: clamp(320px, 28vw, 420px);
     display: flex;
     align-items: center;
   }
@@ -240,7 +240,7 @@
   }
 
   /* ---------- sections ---------- */
-  section { padding: var(--s8) 0; border-top: 1px solid var(--rule); }
+  section { padding: var(--s6) 0; border-top: 1px solid var(--rule); }
 
   .prose { max-width: 68ch; }
   .prose p + p { margin-top: var(--s4); }
@@ -469,7 +469,8 @@
           <span class="eyebrow">Digital forensics</span>
         </div>
         <h1>Pratyay Sarkar</h1>
-        <p class="hero-sub">Tracing attacker behavior through provenance graphs. Digital and IoT forensics for real-world evidence.</p>
+        <p class="hero-sub">Tracing attacker behavior through provenance graphs.</p>
+        <p>Digital and IoT forensics for real-world evidence.</p>
         <div class="hero-tags">
           <span>IACS Kolkata</span>
           <span>UBC Systopia Lab</span>
@@ -663,7 +664,7 @@
         setTimeout(function () {
           flagEdge(startId, nid);
           flagNode(nid);
-        }, i * 180);
+        }, i * 120);
         touchedIds.push(nid);
         touchedEdgeKeys.push(startId + '-' + nid);
       });
@@ -681,18 +682,18 @@
           setTimeout(function () {
             flagEdge(pair[0], pair[1]);
             flagNode(pair[1]);
-          }, i * 160);
+          }, i * 100);
           touchedIds.push(pair[1]);
           touchedEdgeKeys.push(pair[0] + '-' + pair[1]);
         });
 
-        var holdTime = 1600 + hop2.length * 160;
+        var holdTime = 900 + hop2.length * 110;
         setTimeout(function () {
           clearWave(touchedIds, touchedEdgeKeys);
-          setTimeout(runWave, 2200 + Math.random() * 3200);
+          setTimeout(runWave, 1200 + Math.random() * 1800);
         }, holdTime);
-      }, hop1.length * 180 + 650);
-    }, 500);
+      }, hop1.length * 120 + 400);
+    }, 300);
   }
 
   if (reduce) {
