@@ -435,6 +435,24 @@
 
   @media (max-width: 768px) {
     :root { --gutter: 28px; --s8: 56px; --col-tag: 132px; }
+    .nav-inner {
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s2) var(--s3);
+    }
+    .nav-links {
+      flex: 1 1 auto;
+      width: auto;
+      order: 2;
+    }
+    .nav-socials {
+      position: static;
+      transform: none;
+      margin-left: 0;
+      padding-right: 0;
+      order: 3;
+    }
     .hero { min-height: clamp(380px, 60vw, 460px); }
     .graph-field {
       width: 100%;
@@ -449,8 +467,26 @@
   @media (max-width: 560px) {
     :root { --gutter: 20px; --t-lead: 18px; --t-title: 18px; --s8: 44px; }
     body { font-size: 16px; }
-    .nav-inner { padding: var(--s3) var(--gutter); gap: var(--s3); }
-    .nav-links { gap: var(--s4); font-size: var(--t-micro); }
+    .nav-inner {
+      padding: var(--s3) var(--gutter);
+      gap: var(--s2) var(--s3);
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .nav-brand { margin-left: 0; }
+    .nav-links {
+      flex: 1 1 100%;
+      gap: var(--s3);
+      font-size: var(--t-micro);
+      order: 2;
+    }
+    .nav-socials {
+      position: static;
+      transform: none;
+      margin-left: auto;
+      padding-right: 0;
+      order: 3;
+    }
     .hero { padding: var(--s7) 0; min-height: 0; }
     .graph-field { opacity: 0.26; }
     .row { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
