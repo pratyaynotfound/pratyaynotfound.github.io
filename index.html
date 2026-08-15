@@ -81,48 +81,56 @@
 
   /* Hero */
   .hero {
+    position: relative;
     padding: 88px 0 64px;
-    display: grid;
-    grid-template-columns: minmax(240px, 1.15fr) minmax(160px, 0.85fr);
-    gap: clamp(16px, 4vw, 32px);
-    align-items: start;
+    overflow: visible;
   }
-  .hero-text { min-width: 0; }
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    max-width: 46ch;
+  }
   .graph-wrap {
-    width: 100%;
-    margin-top: 6px;
+    position: absolute;
+    top: -20px;
+    right: -50px;
+    width: 480px;
+    max-width: 60vw;
+    z-index: 1;
     opacity: 0.9;
     pointer-events: none;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 42%, rgba(0, 0, 0, 1) 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 42%, rgba(0, 0, 0, 1) 100%);
   }
-  .graph-wrap svg { display: block; width: 100%; height: auto; }
+  .graph-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
   .graph-edge {
     fill: none;
     stroke: var(--ink-muted);
     stroke-width: 1.3;
-    opacity: 0.55;
+    opacity: 0.45;
+    transition: stroke 0.6s ease, opacity 0.6s ease, stroke-width 0.6s ease;
+  }
+  .graph-edge.active {
+    stroke: var(--flag);
+    opacity: 0.85;
+    stroke-width: 1.8;
   }
   .graph-node {
     fill: var(--paper);
     stroke: var(--trace);
     stroke-width: 1.6;
-  }
-  .graph-node.is-flagged {
-    stroke: var(--trace);
-    fill: var(--paper);
     transition: fill 0.6s ease, stroke 0.6s ease;
   }
-  .graph-node.is-flagged.flagged-on {
+  .graph-node.flagged {
     fill: var(--flag);
     stroke: var(--flag);
   }
-  .graph-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    fill: var(--ink-muted);
-    opacity: 0;
-    transition: opacity 0.5s ease;
+  .graph-node.pulse { animation: nodePulse 0.7s ease-out; }
+  @keyframes nodePulse {
+    0% { r: 6; }
+    30% { r: 11; }
+    100% { r: 6; }
   }
-  .graph-label.flagged-on { opacity: 1; fill: var(--flag); }
 
   .eyebrow {
     font-family: var(--font-mono);
@@ -133,6 +141,7 @@
     display: block;
     margin-bottom: 18px;
   }
+  .eyebrow.stacked { margin-bottom: 4px; }
   h1 {
     font-family: var(--font-display);
     font-weight: 600;
@@ -147,6 +156,7 @@
     font-size: clamp(16px, 1.4vw + 12px, 19px);
     color: var(--ink-muted);
   }
+  .hero-sub + .hero-sub { margin-top: 6px; }
   .hero-tags {
     margin-top: 32px;
     font-family: var(--font-mono);
@@ -204,6 +214,13 @@
     margin-bottom: 8px;
   }
   .entry-desc { color: var(--ink-muted); font-size: 16.5px; max-width: 54ch; }
+  .entry-desc a {
+    color: var(--trace);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .entry-desc a:hover,
+  .entry-desc a:focus-visible { border-color: var(--trace); }
 
   /* Timeline */
   .timeline { position: relative; padding-left: 26px; }
@@ -301,8 +318,9 @@
   }
 
   @media (max-width: 540px) {
-    .hero { grid-template-columns: 1fr; gap: 8px; padding-top: 56px; }
-    .graph-wrap { order: -1; max-width: 220px; opacity: 0.6; margin-bottom: 8px; }
+    .hero { padding-top: 56px; }
+    .hero-text { max-width: 100%; }
+    .graph-wrap { display: none; }
   }
 
   @media (max-width: 480px) {
@@ -315,7 +333,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .graph-edge, .graph-node, .graph-label { transition: none !important; }
+    .graph-edge, .graph-node { transition: none !important; }
+    .graph-node.pulse { animation: none !important; }
   }
 </style>
 </head>
@@ -338,9 +357,11 @@
 
   <section class="hero">
     <div class="hero-text">
-      <span class="eyebrow">Provenance-based intrusion detection</span>
+      <span class="eyebrow stacked">Provenance-based intrusion detection</span>
+      <span class="eyebrow">Digital forensics</span>
       <h1>Pratyay Sarkar</h1>
-      <p class="hero-sub">Tracing attacker behavior through system provenance graphs, and building the tools to see it clearly.</p>
+      <p class="hero-sub">Tracing attacker behavior through provenance graphs.</p>
+      <p class="hero-sub">Digital and IoT forensics for real-world evidence.</p>
       <div class="hero-tags">
         <span>IACS Kolkata</span>
         <span>UBC Systopia Lab</span>
@@ -349,27 +370,62 @@
     </div>
 
     <div class="graph-wrap" aria-hidden="true">
-      <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="-90 -70 720 490" xmlns="http://www.w3.org/2000/svg">
         <g id="edges">
-          <line class="graph-edge" x1="70" y1="60" x2="200" y2="40" />
-          <line class="graph-edge" x1="200" y1="40" x2="130" y2="140" />
-          <line class="graph-edge" x1="70" y1="60" x2="310" y2="86" />
-          <line class="graph-edge" x1="310" y1="86" x2="350" y2="150" />
-          <line class="graph-edge" x1="130" y1="140" x2="250" y2="176" />
-          <line class="graph-edge" x1="250" y1="176" x2="180" y2="250" />
-          <line class="graph-edge" x1="130" y1="140" x2="350" y2="150" />
-          <line class="graph-edge" x1="350" y1="150" x2="180" y2="250" />
+          <line class="graph-edge" data-source="0" data-target="1" x1="60" y1="70" x2="170" y2="40" />
+          <line class="graph-edge" data-source="1" data-target="2" x1="170" y1="40" x2="280" y2="90" />
+          <line class="graph-edge" data-source="0" data-target="3" x1="60" y1="70" x2="110" y2="190" />
+          <line class="graph-edge" data-source="3" data-target="4" x1="110" y1="190" x2="230" y2="210" />
+          <line class="graph-edge" data-source="3" data-target="5" x1="110" y1="190" x2="40" y2="260" />
+          <line class="graph-edge" data-source="1" data-target="4" x1="170" y1="40" x2="230" y2="210" />
+          <line class="graph-edge" data-source="2" data-target="4" x1="280" y1="90" x2="230" y2="210" />
+          <line class="graph-edge" data-source="0" data-target="6" x1="60" y1="70" x2="-40" y2="120" />
+          <line class="graph-edge" data-source="0" data-target="7" x1="60" y1="70" x2="-70" y2="220" />
+          <line class="graph-edge" data-source="1" data-target="8" x1="170" y1="40" x2="200" y2="-30" />
+          <line class="graph-edge" data-source="2" data-target="9" x1="280" y1="90" x2="320" y2="-50" />
+          <line class="graph-edge" data-source="2" data-target="10" x1="280" y1="90" x2="480" y2="-20" />
+          <line class="graph-edge" data-source="2" data-target="11" x1="280" y1="90" x2="420" y2="60" />
+          <line class="graph-edge" data-source="11" data-target="12" x1="420" y1="60" x2="560" y2="90" />
+          <line class="graph-edge" data-source="11" data-target="16" x1="420" y1="60" x2="600" y2="180" />
+          <line class="graph-edge" data-source="13" data-target="14" x1="480" y1="130" x2="440" y2="220" />
+          <line class="graph-edge" data-source="2" data-target="14" x1="280" y1="90" x2="440" y2="220" />
+          <line class="graph-edge" data-source="4" data-target="14" x1="230" y1="210" x2="440" y2="220" />
+          <line class="graph-edge" data-source="4" data-target="15" x1="230" y1="210" x2="510" y2="280" />
+          <line class="graph-edge" data-source="5" data-target="19" x1="40" y1="260" x2="80" y2="370" />
+          <line class="graph-edge" data-source="5" data-target="17" x1="40" y1="260" x2="150" y2="340" />
+          <line class="graph-edge" data-source="3" data-target="17" x1="110" y1="190" x2="150" y2="340" />
+          <line class="graph-edge" data-source="4" data-target="18" x1="230" y1="210" x2="260" y2="360" />
+          <line class="graph-edge" data-source="4" data-target="20" x1="230" y1="210" x2="320" y2="400" />
+          <line class="graph-edge" data-source="3" data-target="7" x1="110" y1="190" x2="-70" y2="220" />
+          <line class="graph-edge" data-source="14" data-target="21" x1="440" y1="220" x2="550" y2="400" />
+          <line class="graph-edge" data-source="15" data-target="21" x1="510" y1="280" x2="550" y2="400" />
+          <line class="graph-edge" data-source="13" data-target="16" x1="480" y1="130" x2="600" y2="180" />
+          <line class="graph-edge" data-source="20" data-target="21" x1="320" y1="400" x2="550" y2="400" />
         </g>
         <g id="nodes">
-          <circle class="graph-node" cx="70" cy="60" r="6" />
-          <circle class="graph-node" cx="200" cy="40" r="6" />
-          <circle class="graph-node" cx="310" cy="86" r="6" />
-          <circle class="graph-node is-flagged" id="flagged-node" cx="130" cy="140" r="7" />
-          <circle class="graph-node" cx="250" cy="176" r="6" />
-          <circle class="graph-node" cx="350" cy="150" r="6" />
-          <circle class="graph-node" cx="180" cy="250" r="6" />
+          <circle class="graph-node" data-id="0" cx="60" cy="70" r="6" />
+          <circle class="graph-node" data-id="1" cx="170" cy="40" r="6" />
+          <circle class="graph-node" data-id="2" cx="280" cy="90" r="6" />
+          <circle class="graph-node" data-id="3" cx="110" cy="190" r="6" />
+          <circle class="graph-node" data-id="4" cx="230" cy="210" r="6" />
+          <circle class="graph-node" data-id="5" cx="40" cy="260" r="6" />
+          <circle class="graph-node" data-id="6" cx="-40" cy="120" r="6" />
+          <circle class="graph-node" data-id="7" cx="-70" cy="220" r="6" />
+          <circle class="graph-node" data-id="8" cx="200" cy="-30" r="6" />
+          <circle class="graph-node" data-id="9" cx="320" cy="-50" r="6" />
+          <circle class="graph-node" data-id="10" cx="480" cy="-20" r="6" />
+          <circle class="graph-node" data-id="11" cx="420" cy="60" r="6" />
+          <circle class="graph-node" data-id="12" cx="560" cy="90" r="6" />
+          <circle class="graph-node" data-id="13" cx="480" cy="130" r="6" />
+          <circle class="graph-node" data-id="14" cx="440" cy="220" r="6" />
+          <circle class="graph-node" data-id="15" cx="510" cy="280" r="6" />
+          <circle class="graph-node" data-id="16" cx="600" cy="180" r="6" />
+          <circle class="graph-node" data-id="17" cx="150" cy="340" r="6" />
+          <circle class="graph-node" data-id="18" cx="260" cy="360" r="6" />
+          <circle class="graph-node" data-id="19" cx="80" cy="370" r="6" />
+          <circle class="graph-node" data-id="20" cx="320" cy="400" r="6" />
+          <circle class="graph-node" data-id="21" cx="550" cy="400" r="4" />
         </g>
-        <text class="graph-label" id="flagged-label" x="102" y="122">anomalous</text>
       </svg>
     </div>
   </section>
@@ -377,7 +433,7 @@
   <section id="focus">
     <span class="label">Focus</span>
     <p>I study how system-level provenance graphs can reveal advanced persistent threats that signature-based tools miss, combining graph neural networks, sequence models, and forensic evidence design. Current threads include botnet detection, IoT forensics, and building tools that make anomaly detection legible to the people who have to trust it.</p>
-    <p>Graduated with an Integrated BS-MS in Computational Sciences from IACS Kolkata (2021 to 2026, GPA 8.00/10.00). Remote Research Intern at the Systopia Lab, University of British Columbia. Research Project Intern at Jadavpur University.</p>
+    <p>Graduated with an Integrated BS-MS in Computational Sciences from IACS Kolkata (2021 to 2026). Remote Research Intern at the Systopia Lab, University of British Columbia. Research Project Intern at Jadavpur University.</p>
   </section>
 
   <section id="education">
@@ -391,12 +447,17 @@
       <div class="timeline-item">
         <div class="timeline-year">2021</div>
         <div class="timeline-title">Krishnanagar Collegiate School</div>
-        <p class="timeline-desc">Higher secondary education, 84.6%.</p>
+        <p class="timeline-desc">Higher secondary education.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-year">2021 to 2026</div>
         <div class="timeline-title">IACS Kolkata</div>
-        <p class="timeline-desc">Integrated BS-MS in Mathematical & Computational Sciences.</p>
+        <p class="timeline-desc">Integrated BS-MS in Computational Sciences.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2025 to present</div>
+        <div class="timeline-title">Jadavpur University</div>
+        <p class="timeline-desc">Research Intern.</p>
       </div>
     </div>
   </section>
@@ -407,8 +468,8 @@
     <div class="entry">
       <span class="entry-tag">Graph ML</span>
       <div>
-        <div class="entry-title">PIDSMaker / PIDSMaker-viz</div>
-        <p class="entry-desc">Reproduced OCR-APT within the PIDSMaker framework and evaluated flow and diffusion models for detecting Living-off-the-Land APT attacks. Built a GPU-accelerated 3D provenance embedding visualiser, later rebuilt as a browser-based tool with causal tracing and anomaly analysis, for diagnosing model behavior across provenance graphs with 30M+ nodes. Systopia Lab, University of British Columbia.</p>
+        <div class="entry-title">PIDSMaker</div>
+        <p class="entry-desc">Reproduced <a href="https://arxiv.org/abs/2510.15188" target="_blank" rel="noopener">OCR-APT</a> (Aly et al., ACM CCS 2025) and <a href="https://arxiv.org/abs/2604.14685" target="_blank" rel="noopener">ProvFusion</a> (Yang et al., IEEE S&amp;P 2026) within the <a href="https://www.usenix.org/conference/usenixsecurity25/presentation/bilot" target="_blank" rel="noopener">PIDSMaker</a> framework (Bilot et al., USENIX Security 2025), and evaluated flow and diffusion models for detecting Living-off-the-Land APT attacks. Built a GPU-accelerated 3D provenance embedding visualiser, later rebuilt as a browser-based tool with causal tracing and anomaly analysis, for diagnosing model behavior across provenance graphs with 30M+ nodes. Systopia Lab, University of British Columbia.</p>
       </div>
     </div>
 
@@ -432,7 +493,7 @@
       <span class="entry-tag">IoT security</span>
       <div>
         <div class="entry-title">LoRaComm</div>
-        <p class="entry-desc">An open-source, forensics-ready LoRa mesh networking testbed built on ESP32-C3/SX1262 hardware, with AODV routing, AES-256-GCM encryption, and tamper-evident evidence logging.</p>
+        <p class="entry-desc">An open-source, DIY-buildable LoRa mesh networking testbed built on ESP32-C3/SX1262 hardware, with AODV routing, AES-256-GCM encryption, and tamper-evident evidence logging. Research Intern, Jadavpur University.</p>
       </div>
     </div>
 
@@ -448,7 +509,7 @@
   <section id="now">
     <span class="label">Now</span>
     <ul class="now-list">
-      <li>Applying to PhD programs in systems security and machine learning for graph-structured data, for Fall 2027 admission.</li>
+      <li>Designing an evidence-grounded, multi-agent framework (CrewAI) that reconstructs executed attack paths from forensic logs, distinguishing what is evidenced from what is merely possible.</li>
       <li>Freelance security and digital forensics consulting through ASTHA SOFTTECH SOLUTIONS.</li>
     </ul>
   </section>
@@ -475,31 +536,124 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var edges = document.querySelectorAll('.graph-edge');
-    var flaggedNode = document.getElementById('flagged-node');
-    var flaggedLabel = document.getElementById('flagged-label');
+    var edgeEls = Array.prototype.slice.call(document.querySelectorAll('.graph-edge'));
+    var nodeEls = Array.prototype.slice.call(document.querySelectorAll('.graph-node'));
+
+    var nodesById = {};
+    nodeEls.forEach(function (n) { nodesById[n.getAttribute('data-id')] = n; });
+
+    var adjacency = {};
+    var edgesByKey = {};
+    edgeEls.forEach(function (e) {
+      var a = e.getAttribute('data-source');
+      var b = e.getAttribute('data-target');
+      if (!adjacency[a]) adjacency[a] = [];
+      if (!adjacency[b]) adjacency[b] = [];
+      adjacency[a].push(b);
+      adjacency[b].push(a);
+      edgesByKey[a + '-' + b] = e;
+      edgesByKey[b + '-' + a] = e;
+    });
+
+    var allIds = Object.keys(nodesById);
+
+    function activateNode(id) {
+      var n = nodesById[id];
+      if (!n) return;
+      n.classList.add('flagged', 'pulse');
+      setTimeout(function () { n.classList.remove('pulse'); }, 700);
+    }
+
+    function activateEdge(a, b) {
+      var e = edgesByKey[a + '-' + b];
+      if (e) e.classList.add('active');
+    }
+
+    function clearWave(ids, edgeKeys) {
+      ids.forEach(function (id) {
+        var n = nodesById[id];
+        if (n) n.classList.remove('flagged');
+      });
+      edgeKeys.forEach(function (key) {
+        var e = edgesByKey[key];
+        if (e) e.classList.remove('active');
+      });
+    }
+
+    function runWave() {
+      var startId = allIds[Math.floor(Math.random() * allIds.length)];
+      var touchedIds = [startId];
+      var touchedEdgeKeys = [];
+
+      activateNode(startId);
+
+      setTimeout(function () {
+        var hop1 = (adjacency[startId] || []).slice();
+        hop1.forEach(function (nid, i) {
+          setTimeout(function () {
+            activateEdge(startId, nid);
+            activateNode(nid);
+          }, i * 150);
+          touchedIds.push(nid);
+          touchedEdgeKeys.push(startId + '-' + nid);
+        });
+
+        setTimeout(function () {
+          var visited = {};
+          touchedIds.forEach(function (id) { visited[id] = true; });
+          var hop2 = [];
+          hop1.forEach(function (nid) {
+            (adjacency[nid] || []).forEach(function (n2) {
+              if (!visited[n2]) { hop2.push([nid, n2]); visited[n2] = true; }
+            });
+          });
+          hop2.forEach(function (pair, i) {
+            setTimeout(function () {
+              activateEdge(pair[0], pair[1]);
+              activateNode(pair[1]);
+            }, i * 130);
+            touchedIds.push(pair[1]);
+            touchedEdgeKeys.push(pair[0] + '-' + pair[1]);
+          });
+
+          var holdTime = 1400 + hop2.length * 130;
+          setTimeout(function () {
+            clearWave(touchedIds, touchedEdgeKeys);
+            setTimeout(runWave, 500 + Math.random() * 900);
+          }, holdTime);
+        }, hop1.length * 150 + 500);
+      }, 550);
+    }
 
     if (reduceMotion) {
-      flaggedNode.classList.add('flagged-on');
-      flaggedLabel.classList.add('flagged-on');
+      var staticId = allIds[0];
+      activateNode(staticId);
+      (adjacency[staticId] || []).forEach(function (nid) {
+        activateEdge(staticId, nid);
+        activateNode(nid);
+      });
       return;
     }
 
-    edges.forEach(function (edge, i) {
+    edgeEls.forEach(function (edge, i) {
       var length = edge.getTotalLength();
       edge.style.strokeDasharray = length;
       edge.style.strokeDashoffset = length;
       edge.getBoundingClientRect();
-      edge.style.transition = 'stroke-dashoffset 0.7s ease ' + (i * 0.12) + 's';
+      edge.style.transition = 'stroke-dashoffset 0.5s ease ' + (i * 0.03) + 's';
       requestAnimationFrame(function () {
         edge.style.strokeDashoffset = '0';
       });
     });
 
-    var totalDelay = edges.length * 120 + 500;
+    var totalDelay = edgeEls.length * 30 + 500;
     setTimeout(function () {
-      flaggedNode.classList.add('flagged-on');
-      flaggedLabel.classList.add('flagged-on');
+      edgeEls.forEach(function (edge) {
+        edge.style.transition = '';
+        edge.style.strokeDasharray = '';
+        edge.style.strokeDashoffset = '';
+      });
+      runWave();
     }, totalDelay);
   });
 </script>
