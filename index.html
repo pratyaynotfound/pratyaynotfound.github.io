@@ -405,7 +405,13 @@
   .row-body a:hover,
   .row-body a:focus-visible { border-color: var(--trace); }
 
-  .now-list { list-style: none; max-width: 76ch; }
+  .now-list {
+    list-style: none;
+    max-width: 76ch;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
   .now-list li {
     display: flex;
     gap: var(--s3);
