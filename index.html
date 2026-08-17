@@ -57,19 +57,6 @@
     color-scheme: light;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #18181B;
-      --paper-tint: #222226;
-      --ink: #F0EDE6;
-      --ink-soft: #C7C3BC;
-      --ink-muted: #8B8880;
-      --trace: #5FC4BE;
-      --flag: #E4573F;
-      --rule: #2E2C31;
-      color-scheme: dark;
-    }
-  }
   :root[data-theme="dark"] {
     --paper: #18181B;
     --paper-tint: #222226;
@@ -384,9 +371,6 @@
   .pg-node.flagged {
     fill: var(--flag);
     stroke: var(--flag);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .pg-edge { opacity: 0.4; }
   }
   :root[data-theme="dark"] .pg-edge { opacity: 0.4; }
   .pg-node.pulse { animation: pgPulse 0.7s ease-out; }
