@@ -257,9 +257,9 @@
     display: block;
     fill: currentColor;
   }
-  .theme-toggle .icon-sun { display: none; }
-  :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-  :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  .theme-toggle .icon-moon { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
 
   /* ---------- shared type ---------- */
   .label,
@@ -677,6 +677,11 @@
       localStorage.setItem('theme', next);
     });
   }
+
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (localStorage.getItem('theme')) return;
+    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+  });
 </script>
 
 <div class="hero-stage">
